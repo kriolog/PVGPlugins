@@ -21,6 +21,8 @@ variable blocks size.
 #ifndef _vtkConvertPointsToBlocks_h
 #define _vtkConvertPointsToBlocks_h
 
+#include "vtkFiltersCoreModule.h" // For export macro
+
 #include "vtkUnstructuredGridAlgorithm.h"
 #include "vtkPolyData.h"
 
@@ -28,18 +30,8 @@ class VTK_EXPORT vtkConvertPointsToBlocks : public vtkUnstructuredGridAlgorithm
 {
 public:
 	static vtkConvertPointsToBlocks *New();
-	vtkTypeRevisionMacro(vtkConvertPointsToBlocks,vtkUnstructuredGridAlgorithm);
+	vtkTypeMacro(vtkConvertPointsToBlocks,vtkUnstructuredGridAlgorithm);
 	void PrintSelf(ostream& os, vtkIndent indent);
-
-	//dimension 
-	vtkSetStringMacro(XINC);
-	vtkGetStringMacro(XINC);
-
-	vtkSetStringMacro(YINC);
-	vtkGetStringMacro(YINC);
-
-	vtkSetStringMacro(ZINC);
-	vtkGetStringMacro(ZINC);
 
 	vtkSetMacro(SizeCX, double);
 	vtkGetMacro(SizeCX, double);
@@ -70,11 +62,6 @@ private:
 	vtkConvertPointsToBlocks(const vtkConvertPointsToBlocks&);
 	void operator = (const vtkConvertPointsToBlocks&);
 
-	//
-	char* XINC;
-	char* YINC;
-	char* ZINC;
-	
 	double SizeCX;
 	double SizeCY;
 	double SizeCZ; 

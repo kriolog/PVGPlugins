@@ -1,60 +1,33 @@
 #ifndef _pqConvertPointsToBlocks_h
 #define _pqConvertPointsToBlocks_h
 
-#include "pqLoadedFormObjectPanel.h"
-#include "pqComponentsExport.h"
-#include <QActionEvent>
-#include <QLineEdit>
-#include <QWidget>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QFlags>
-#include <QFile>
-#include <QTextStream>
-#include <QString>
+#include "pqApplicationComponentsModule.h"
+#include "pqPropertyGroupWidget.h"
 
-#include <QSet>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QHeaderView>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QRadioButton>
-#include <QGroupBox>
-#include <vtkSMIntVectorProperty.h>
-#include <QCheckBox>
+class vtkSMPropertyGroup;
+namespace Ui{
+  class Form;
+}
 
-class pqConvertPointsToBlocks : public pqLoadedFormObjectPanel  {
+class PQAPPLICATIONCOMPONENTS_EXPORT pqConvertPointsToBlocks
+  : public pqPropertyGroupWidget
+{
   Q_OBJECT
+  typedef pqPropertyGroupWidget Superclass;
+
 public:
   /// constructor
-  pqConvertPointsToBlocks(pqProxy* proxy, QWidget* p = NULL);
+  pqConvertPointsToBlocks(
+    vtkSMProxy* proxy, vtkSMPropertyGroup* smgroup, QWidget* parent = 0);
   /// destructor
   ~pqConvertPointsToBlocks();
-  virtual void accept();
-  virtual void reset();
 
- protected slots:
+protected slots:
   virtual  void updateGui();	
 
-protected:
-  /// populate widgets with properties from the server manager
-	virtual void linkServerManagerProperties();
-
-	QDoubleSpinBox *SizeCX;
-	QDoubleSpinBox *SizeCY;
-	QDoubleSpinBox *SizeCZ;
-
-	QComboBox *XINC;	
-	QComboBox *YINC;	
-	QComboBox *ZINC;	
-
-	QComboBox* xEntry;
-	QComboBox* yEntry;
-	QComboBox* zEntry;
-
-
+private:
+  Q_DISABLE_COPY(pqConvertPointsToBlocks)
+  Ui::Form* ui;
 };
 
 #endif

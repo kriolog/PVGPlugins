@@ -27,17 +27,12 @@ Version:   0.1
 #include "vtkIdList.h"
 #include "vtkDoubleArray.h"
 
-vtkCxxRevisionMacro(vtkConvertPointsToBlocks, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkConvertPointsToBlocks);
 
 vtkConvertPointsToBlocks::vtkConvertPointsToBlocks()
 {
 	this->SetNumberOfInputPorts(1);
 	this->SetNumberOfOutputPorts(1);
-
-	this->XINC= NULL;
-	this->YINC= NULL;
-	this->ZINC= NULL;
 
 	this->XEntry = NULL;
 	this->YEntry = NULL;
@@ -111,7 +106,7 @@ vtkUnstructuredGrid* vtkConvertPointsToBlocks::ConvertsToDefaultGeometry(vtkData
 	vtkDoubleArray* ZINCArray;//size array on z dimension
 	if(useXArray)
 	{
-		XINCArray= vtkDoubleArray::SafeDownCast(input->GetPointData()->GetArray(this->XINC));
+		XINCArray= vtkDoubleArray::SafeDownCast(this->GetInputArrayToProcess(0, input));
 		if((XINCArray==NULL))
 		{
 			vtkErrorMacro("Coudn't read X Property");
@@ -120,7 +115,7 @@ vtkUnstructuredGrid* vtkConvertPointsToBlocks::ConvertsToDefaultGeometry(vtkData
 	}
 	if(useYArray)
 	{
-		YINCArray= vtkDoubleArray::SafeDownCast(input->GetPointData()->GetArray(this->YINC));
+		YINCArray= vtkDoubleArray::SafeDownCast(this->GetInputArrayToProcess(1, input));
 		if((YINCArray==NULL))
 		{
 			vtkErrorMacro("Coudn't read Y Property");
@@ -129,7 +124,7 @@ vtkUnstructuredGrid* vtkConvertPointsToBlocks::ConvertsToDefaultGeometry(vtkData
 	}
 	if(useZArray)
 	{
-		ZINCArray= vtkDoubleArray::SafeDownCast(input->GetPointData()->GetArray(this->ZINC));
+		ZINCArray= vtkDoubleArray::SafeDownCast(this->GetInputArrayToProcess(2, input));
 		if((ZINCArray==NULL))
 		{
 			vtkErrorMacro("Coudn't read Z Property");
@@ -178,7 +173,7 @@ vtkUnstructuredGrid* vtkConvertPointsToBlocks::ConvertsToDefaultGeometry(vtkData
 
 	//clean first 
 	vtkCleanUnstructuredGrid *clean  = vtkCleanUnstructuredGrid::New();
-	clean->SetInput( temp );
+	clean->SetInputData( temp );
 	clean->Update();
 	temp->Delete();
 

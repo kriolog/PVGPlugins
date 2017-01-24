@@ -1,75 +1,47 @@
 <ServerManagerConfiguration>
-  <!-- Begin ConvertPointsToBlocks -->
   <ProxyGroup name="filters">
     <SourceProxy name="ConvertPointsToBlocks" class="vtkConvertPointsToBlocks">
-
-      <InputProperty
-        name="Input"
-        command="SetInputConnection">
+      <InputProperty command="SetInputConnection"
+                     name="Input">
         <ProxyGroupDomain name="groups">
-          <Group name="sources"/>
-          <Group name="filters"/>
+          <Group name="sources" />
+          <Group name="filters" />
         </ProxyGroupDomain>
         <DataTypeDomain name="input_type">
-          <DataType value="vtkDataSet"/>
+          <DataType value="vtkDataSet" />
         </DataTypeDomain>
-
-        <InputArrayDomain name="input_array1"
-                           optional="1">
-          <RequiredProperties>
-            <Property name="SelectInputScalars"
-                function="FieldDataSelection"/>
-          </RequiredProperties>
-        </InputArrayDomain>
-
-        <InputArrayDomain name="input_array2"
-                           optional="1">
-          <RequiredProperties>
-            <Property name="SelectInputScalars"
-            function="FieldDataSelection"/>
-          </RequiredProperties>
-        </InputArrayDomain>
-
-        <InputArrayDomain name="input_array3"
-                           optional="1">
-          <RequiredProperties>
-            <Property name="SelectInputScalars"
-            function="FieldDataSelection"/>
-          </RequiredProperties>
-        </InputArrayDomain>
+        <InputArrayDomain attribute_type="point"
+                          name="input_array_xinc"
+                          number_of_components="1"
+                          optional="1" />
+        <InputArrayDomain attribute_type="point"
+                          name="input_array_yinc"
+                          number_of_components="1"
+                          optional="1" />
+        <InputArrayDomain attribute_type="point"
+                          name="input_array_zinc"
+                          number_of_components="1"
+                          optional="1" />
       </InputProperty>
 
-      <StringVectorProperty name="XEntry"
-         command="SetXEntry"
-         number_of_elements="1"
-         default_values="">
-      </StringVectorProperty>
 
-      <StringVectorProperty
-         name="YEntry"
-         command="SetYEntry"
-         number_of_elements="1"
-         default_values="">
-      </StringVectorProperty>
-
-      <StringVectorProperty name="ZEntry"
-         command="SetZEntry"
-         number_of_elements="1"
-         default_values="">
-      </StringVectorProperty>
-
-      <StringVectorProperty
-          name="XINC"
-          command="SetXINC"
-          number_of_elements="1"
-          animateable="0"
-          label="XINC">
-        <ArrayListDomain name="array_list"
-             attribute_type="Scalars"
-       none_string="Not Available"
-			 input_domain_name="input_array1">
+      <StringVectorProperty command="SetInputArrayToProcess"
+                            default_values="0"
+                            element_types="0 0 0 0 2"
+                            name="SelectInputScalars"
+                            label="XINC"
+                            number_of_elements="5">
+                            <!-- WARNING: The first array entry should have name
+                            "SelectInputScalars", the following ones should
+                            have different names, no idea why.
+                            "default_values" corresponds to the array index. -->
+        <ArrayListDomain attribute_type="Scalars"
+                         input_domain_name="input_array_xinc"
+                         name="array_list"
+                         none_string="Not Available">
           <RequiredProperties>
-            <Property name="Input" function="Input"/>
+            <Property function="Input"
+                      name="Input" />
           </RequiredProperties>
         </ArrayListDomain>
         <Documentation>
@@ -77,19 +49,19 @@
         </Documentation>
       </StringVectorProperty>
 
-      <StringVectorProperty
-          name="YINC"
-          command="SetYINC"
-          number_of_elements="1"
-          animateable="0"
-        default_values=""
-          label="YINC">
-        <ArrayListDomain name="array_list"
-             attribute_type="Scalars"
-        none_string="Not Available"
-			 input_domain_name="input_array2">
+      <StringVectorProperty command="SetInputArrayToProcess"
+                            default_values="1"
+                            element_types="0 0 0 0 2"
+                            name="YINC"
+                            label="YINC"
+                            number_of_elements="5">
+        <ArrayListDomain attribute_type="Scalars"
+                         input_domain_name="input_array_yinc"
+                         name="array_list"
+                         none_string="Not Available">
           <RequiredProperties>
-            <Property name="Input" function="Input"/>
+            <Property function="Input"
+                      name="Input" />
           </RequiredProperties>
         </ArrayListDomain>
         <Documentation>
@@ -97,25 +69,45 @@
         </Documentation>
       </StringVectorProperty>
 
-      <StringVectorProperty
-           name="ZINC"
-           command="SetZINC"
-           number_of_elements="1"
-           animateable="0"
-         default_values=""
-           label="ZINC">
-        <ArrayListDomain name="array_list"
-             attribute_type="Scalars"
-        none_string="Not Available"
-			 input_domain_name="input_array3">
+      <StringVectorProperty command="SetInputArrayToProcess"
+                            default_values="2"
+                            element_types="0 0 0 0 2"
+                            name="ZINC"
+                            label="ZINC"
+                            number_of_elements="5">
+        <ArrayListDomain attribute_type="Scalars"
+                         input_domain_name="input_array_zinc"
+                         name="array_list"
+                         none_string="Not Available">
           <RequiredProperties>
-            <Property name="Input" function="Input"/>
+            <Property function="Input"
+                      name="Input" />
           </RequiredProperties>
         </ArrayListDomain>
         <Documentation>
           This property indicates the name of Z block dimension array
         </Documentation>
       </StringVectorProperty>
+
+
+      <StringVectorProperty name="XEntry"
+                            command="SetXEntry"
+                            number_of_elements="1"
+                            default_values="">
+      </StringVectorProperty>
+
+      <StringVectorProperty name="YEntry"
+                            command="SetYEntry"
+                            number_of_elements="1"
+                            default_values="">
+      </StringVectorProperty>
+
+      <StringVectorProperty name="ZEntry"
+                            command="SetZEntry"
+                            number_of_elements="1"
+                            default_values="">
+      </StringVectorProperty>
+
 
       <DoubleVectorProperty
         name="SizeCX"
@@ -146,7 +138,24 @@
           The dimension Size by Z Direction
         </Documentation>
       </DoubleVectorProperty>
+
+
+      <PropertyGroup label="" panel_widget="ConvertPointsToBlocksWidget">
+          <Property name="XEntry" function="LinkXEntry"/>
+          <Property name="YEntry" function="LinkYEntry"/>
+          <Property name="ZEntry" function="LinkZEntry"/>
+          <Property name="SizeCX" function="LinkSizeCX"/>
+          <Property name="SizeCY" function="LinkSizeCY"/>
+          <Property name="SizeCZ" function="LinkSizeCZ"/>
+          <Property name="SelectInputScalars" function="LinkXINC"/>
+          <Property name="YINC" function="LinkYINC"/>
+          <Property name="ZINC" function="LinkZINC"/>
+      </PropertyGroup>
+
+
+      <Hints>
+        <ShowInMenu category="Mirarco" />
+      </Hints>
     </SourceProxy>
   </ProxyGroup>
-  <!-- End ConvertPointsToBlocks -->
 </ServerManagerConfiguration>

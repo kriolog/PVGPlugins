@@ -1,26 +1,68 @@
-PROJECT(ConvertPointsToBlocks)
-FIND_PACKAGE(ParaView REQUIRED)
-INCLUDE(${PARAVIEW_USE_FILE})
+project(ConvertPointsToBlocks)
+find_package(ParaView REQUIRED)
+include(${PARAVIEW_USE_FILE})
+
+# include generated ui_*.h files
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+set(Module_SRCS
+  pq${PROJECT_NAME}.h
+  pq${PROJECT_NAME}.cxx
+)
+
+set(Module_MOC_HDRS
+  pq${PROJECT_NAME}.h
+)
+
+set(Module_UI_FILES
+  pq${PROJECT_NAME}.ui
+)
+
+pv_qt_wrap_cpp(__Module_MOC_SRCS ${Module_MOC_HDRS})
+pv_qt_wrap_ui(__Module_UI_SRCS ${Module_UI_FILES})
+
+set (outifaces)
+set (outsrcs)
+add_paraview_property_group_widget(
+  outifaces
+  outsrcs
+  TYPE "${PROJECT_NAME}Widget"
+  CLASS_NAME pq${PROJECT_NAME}
+)
+
+add_paraview_plugin(
+  ${PROJECT_NAME}SMPlugin "1.0"
+  SERVER_MANAGER_XML ${PROJECT_NAME}.xml
+  SERVER_MANAGER_SOURCES vtk${PROJECT_NAME}.cxx
+  GUI_INTERFACES ${outifaces}
+  SOURCES
+    ${outsrcs}
+    ${Module_SRCS}
+    ${__Module_RESOURCE_SRCS}
+    ${__Module_MOC_SRCS}
+    ${__Module_UI_SRCS}
+)
 
 
-
-QT4_WRAP_CPP(MOC_SRCS pqConvertPointsToBlocks.h)
-ADD_PARAVIEW_OBJECT_PANEL(IFACES IFACE_SRCS CLASS_NAME 	pqConvertPointsToBlocks
-                          XML_NAME ConvertPointsToBlocks XML_GROUP filters)
-
-
-# create a plugin for this panel
-ADD_PARAVIEW_PLUGIN(GUIConvertPointsToBlocks "1.0" 
-                    GUI_INTERFACES ${IFACES} 
-                    GUI_RESOURCES pqConvertPointsToBlocksUI.qrc
-                    SOURCES pqConvertPointsToBlocks.cxx ${MOC_SRCS}
-${IFACE_SRCS})
-
-
-ADD_PARAVIEW_PLUGIN(ConvertPointsToBlocksSMPlugin "1.0"
-	SERVER_MANAGER_XML ConvertPointsToBlocks.xml
-	SERVER_MANAGER_SOURCES vtkConvertPointsToBlocks.cxx)
+# # Use the following if dynamic linkage is required
+# set(vtk-module ConvertPointsToBlocksComponents)
+#
+# set(${vtk-module}_NO_HeaderTest 1)
+#
+# vtk_add_library(${vtk-module}
+#   ${Module_SRCS}
+#   ${__Module_RESOURCE_SRCS}
+#   ${__Module_MOC_SRCS}
+#   ${__Module_UI_SRCS})
+#
+# target_link_libraries(${vtk-module} LINK_PRIVATE ${qt_private_targets})
 
 
-ADD_PARAVIEW_PLUGIN(ConvertPointsToBlocksGUIPlugin "1.0"
-			GUI_RESOURCE_FILES ConvertPointsToBlocksCategory.xml)
+# # Linkage works fine without the following (maybe not required)
+# include(ParaViewQt)
+# pv_find_package_qt(qt_private_targets REQUIRED QUIET
+#   QT4_COMPONENTS QtGui
+#   QT5_COMPONENTS Widgets
+# )
+#
+# target_link_libraries(${PROJECT_NAME}SMPlugin LINK_PRIVATE ${qt_private_targets})

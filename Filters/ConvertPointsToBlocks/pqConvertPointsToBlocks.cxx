@@ -1,85 +1,124 @@
 #include "pqConvertPointsToBlocks.h"
-#include <pqFileDialog.h>
-#include <QtDebug>
+#include "ui_pqConvertPointsToBlocks.h"
 
-pqConvertPointsToBlocks::pqConvertPointsToBlocks(pqProxy* pxy, QWidget* p) :
-pqLoadedFormObjectPanel(":/PVGFilters/ConvertPointsToBlocks/pqConvertPointsToBlocks.ui", pxy, p)
+#include "pqSignalAdaptors.h"
+#include "vtkSMPropertyGroup.h"
+#include "vtkSMProxy.h"
+#include "pqComboBoxDomain.h"
+
+pqConvertPointsToBlocks::pqConvertPointsToBlocks(
+  vtkSMProxy* smproxy, vtkSMPropertyGroup* smgroup, QWidget* parentObject)
+  : Superclass(smproxy, smgroup, parentObject)
 {
-	this->SizeCX= this->findChild<QDoubleSpinBox*>("SizeCX");
-	this->SizeCY= this->findChild<QDoubleSpinBox*>("SizeCY");
-	this->SizeCZ= this->findChild<QDoubleSpinBox*>("SizeCZ");		
-	this->XINC= this->findChild<QComboBox*>("XINC");
-	this->YINC= this->findChild<QComboBox*>("YINC");
-	this->ZINC= this->findChild<QComboBox*>("ZINC");
-	this->xEntry = this->findChild<QComboBox*>("XEntry");
-	this->yEntry = this->findChild<QComboBox*>("YEntry");
-	this->zEntry = this->findChild<QComboBox*>("ZEntry");
+  ui = new Ui::Form;
+  ui->setupUi(this);
 
-	QObject::connect(this->xEntry, SIGNAL(currentIndexChanged(int)),this, SLOT(updateGui(void)));
-	QObject::connect(this->yEntry, SIGNAL(currentIndexChanged(int)),this, SLOT(updateGui(void)));
-	QObject::connect(this->zEntry, SIGNAL(currentIndexChanged(int)),this, SLOT(updateGui(void)));
+  vtkSMProperty* smproperty;
+  this->setChangeAvailableAsChangeFinished(true);
 
-	this->linkServerManagerProperties();
 
-	this->updateGui();
+  if(smproperty = smgroup->GetProperty("LinkXEntry")) {
+    this->addPropertyLink(new pqSignalAdaptorComboBox(ui->XEntry), "currentText",
+      SIGNAL(currentTextChanged(QString)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'XEntry'.");
+  }
+
+  if(smproperty = smgroup->GetProperty("LinkYEntry")) {
+    this->addPropertyLink(new pqSignalAdaptorComboBox(ui->YEntry),
+      "currentText", SIGNAL(currentTextChanged(QString)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'YEntry'.");
+  }
+
+  if(smproperty = smgroup->GetProperty("LinkZEntry")) {
+    this->addPropertyLink(new pqSignalAdaptorComboBox(ui->ZEntry),
+      "currentText", SIGNAL(currentTextChanged(QString)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'ZEntry'.");
+  }
+
+  QObject::connect(ui->XEntry, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGui(void)));
+  QObject::connect(ui->YEntry, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGui(void)));
+  QObject::connect(ui->ZEntry, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGui(void)));
+
+
+  if(smproperty = smgroup->GetProperty("LinkSizeCX")) {
+    this->addPropertyLink(ui->SizeCX, "value", SIGNAL(valueChanged(double)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'SizeCX'.");
+  }
+
+  if(smproperty = smgroup->GetProperty("LinkSizeCY")) {
+    this->addPropertyLink(ui->SizeCY, "value", SIGNAL(valueChanged(double)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'SizeCY'.");
+  }
+
+  if(smproperty = smgroup->GetProperty("LinkSizeCZ")) {
+    this->addPropertyLink(ui->SizeCZ, "value", SIGNAL(valueChanged(double)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'SizeCZ'.");
+  }
+
+
+  if(smproperty = smgroup->GetProperty("LinkXINC")) {
+    new pqComboBoxDomain(ui->XINC, smproperty, "array_list");
+    this->addPropertyLink(new pqSignalAdaptorComboBox(ui->XINC), "currentText",
+      SIGNAL(currentTextChanged(QString)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'XINC'.");
+  }
+
+  if(smproperty = smgroup->GetProperty("LinkYINC")) {
+    new pqComboBoxDomain(ui->YINC, smproperty, "array_list");
+    this->addPropertyLink(new pqSignalAdaptorComboBox(ui->YINC), "currentText",
+      SIGNAL(currentTextChanged(QString)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'YINC'.");
+  }
+
+  if(smproperty = smgroup->GetProperty("LinkZINC")) {
+    new pqComboBoxDomain(ui->ZINC, smproperty, "array_list");
+    this->addPropertyLink(new pqSignalAdaptorComboBox(ui->ZINC), "currentText",
+      SIGNAL(currentTextChanged(QString)), smproperty);
+  } else {
+    qCritical("Missing required property for function 'ZINC'.");
+  }
+
+
+  this->updateGui();
 }
 
 pqConvertPointsToBlocks::~pqConvertPointsToBlocks()
 {
+  delete ui;
 }
-
-void pqConvertPointsToBlocks::accept()
-{
-	pqLoadedFormObjectPanel::accept();
-}
-
-void pqConvertPointsToBlocks::reset()
-{
-	// reset widgets controlled by the parent class
-	pqLoadedFormObjectPanel::reset();
-}
-
-void pqConvertPointsToBlocks::linkServerManagerProperties()
-{
-	// parent class hooks up some of our widgets in the ui
-	pqLoadedFormObjectPanel::linkServerManagerProperties();
-}
-
 
 void pqConvertPointsToBlocks::updateGui()
-{	 	  
-	if(this->xEntry->currentIndex() == 1)
-	{
-		this->XINC->setEnabled(true);
-		this->SizeCX->setEnabled(false);
-	}
-	else
-	{
-		this->XINC->setEnabled(false);
-		this->SizeCX->setEnabled(true);
-	}
+{
+  if(ui->XEntry->currentIndex() == 1) {
+    ui->XINC->setEnabled(true);
+    ui->SizeCX->setEnabled(false);
+  } else {
+    ui->XINC->setEnabled(false);
+    ui->SizeCX->setEnabled(true);
+  }
 
-	if(this->yEntry->currentIndex() == 1)
-	{
-		this->YINC->setEnabled(true);
-		this->SizeCY->setEnabled(false);
-	}
-	else
-	{
-		this->YINC->setEnabled(false);
-		this->SizeCY->setEnabled(true);
-	}
+  if(ui->YEntry->currentIndex() == 1) {
+    ui->YINC->setEnabled(true);
+    ui->SizeCY->setEnabled(false);
+  } else {
+    ui->YINC->setEnabled(false);
+    ui->SizeCY->setEnabled(true);
+  }
 
-	if(this->zEntry->currentIndex() == 1)
-	{
-		this->ZINC->setEnabled(true);
-		this->SizeCZ->setEnabled(false);
-	}
-	else
-	{
-		this->ZINC->setEnabled(false);
-		this->SizeCZ->setEnabled(true);
-	}
-
+  if(ui->ZEntry->currentIndex() == 1) {
+    ui->ZINC->setEnabled(true);
+    ui->SizeCZ->setEnabled(false);
+  } else {
+    ui->ZINC->setEnabled(false);
+    ui->SizeCZ->setEnabled(true);
+  }
 }
 
