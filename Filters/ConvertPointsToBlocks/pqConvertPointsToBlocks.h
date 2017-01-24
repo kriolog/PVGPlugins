@@ -22,12 +22,14 @@ public:
   /// destructor
   ~pqConvertPointsToBlocks();
 
+protected:
+    Ui::Form* ui;
+
 protected slots:
   virtual  void updateGui();	
 
 private:
   Q_DISABLE_COPY(pqConvertPointsToBlocks)
-  Ui::Form* ui;
 };
 
 #endif
