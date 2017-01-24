@@ -22,3 +22,4 @@ include(vtkExternalModuleMacros)
 
 add_subdirectory(Filters/ConvertPointsToBlocks)
 add_subdirectory(Filters/PolyToStruct)
+add_subdirectory(NonBSDPlugins/tetgen)

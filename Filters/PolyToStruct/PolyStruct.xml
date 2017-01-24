@@ -39,6 +39,10 @@ The Outline filter generates an axis-aligned bounding box for the input dataset.
       default_values="10.0">
       <IntRangeDomain name="range" min="2" /> 
       </IntVectorProperty>
+
+      <Hints>
+        <ShowInMenu category="Mirarco" />
+      </Hints>
     </SourceProxy>
       
    </ProxyGroup>
