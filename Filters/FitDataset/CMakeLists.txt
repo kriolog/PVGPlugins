@@ -1,6 +1,11 @@
 project(FitDataset)
-find_package(ParaView REQUIRED)
-include(${PARAVIEW_USE_FILE})
+
+if(ParaView_SOURCE_DIR)
+  include_directories(${VTK_INCLUDE_DIRS})
+else()
+  find_package(ParaView REQUIRED)
+  include(${PARAVIEW_USE_FILE})
+endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/common)
 
@@ -15,5 +20,5 @@ add_paraview_plugin(
     Inc3dCHull_Face.cpp
     Inc3dCHull_Edge.cpp
     Inc3dCHull_Vertex.cpp
-    ${CMAKE_SOURCE_DIR}/common/vtkCoordinateSystemMapper.cpp
+    ../../common/vtkCoordinateSystemMapper.cpp
 )

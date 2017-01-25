@@ -1,6 +1,11 @@
 project(ConvertPointsToBlocks)
-find_package(ParaView REQUIRED)
-include(${PARAVIEW_USE_FILE})
+
+if(ParaView_SOURCE_DIR)
+  include_directories(${VTK_INCLUDE_DIRS})
+else()
+  find_package(ParaView REQUIRED)
+  include(${PARAVIEW_USE_FILE})
+endif()
 
 # include generated ui_*.h files
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
