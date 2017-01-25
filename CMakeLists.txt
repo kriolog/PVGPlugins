@@ -21,5 +21,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${VTK_CMAKE_DIR})
 include(vtkExternalModuleMacros)
 
 add_subdirectory(Filters/ConvertPointsToBlocks)
+add_subdirectory(Filters/FitDataset)
 add_subdirectory(Filters/PolyToStruct)
 add_subdirectory(NonBSDPlugins/tetgen)
