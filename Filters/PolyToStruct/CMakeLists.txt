@@ -1,14 +1,9 @@
-PROJECT(PolyToStruct)
-FIND_PACKAGE(ParaView REQUIRED)
-INCLUDE(${PARAVIEW_USE_FILE})
+project(PolyStruct)
+find_package(ParaView REQUIRED)
+include(${PARAVIEW_USE_FILE})
 
-ADD_PARAVIEW_PLUGIN(PolyStructSMPlugin "1.0"
-			SERVER_MANAGER_XML PolyStruct.xml
-			SERVER_MANAGER_SOURCES vtkPolyStruct.cxx)
-
-target_link_libraries(PolyStructSMPlugin)
-
-ADD_PARAVIEW_PLUGIN(PolyStructGUIPlugin "1.0"
-                        GUI_RESOURCE_FILES PolyStructCategory.xml)
-
-target_link_libraries(PolyStructGUIPlugin)
+add_paraview_plugin(
+  ${PROJECT_NAME}SMPlugin "1.0"
+  SERVER_MANAGER_XML ${PROJECT_NAME}.xml
+  SERVER_MANAGER_SOURCES vtk${PROJECT_NAME}.cxx
+)
